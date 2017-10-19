@@ -78,6 +78,10 @@ module.exports = {
 				loaders: [ 'babel-loader' ],
 			},
 			{
+				include: /\.(vert|frag|geom)$/i,
+				loaders: [ 'raw-loader' ],
+			},
+			{
 				test: path.resolve(process.cwd(), 'src/app.scss'),
 				loaders: [
 					'style-loader',
