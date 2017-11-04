@@ -2,13 +2,13 @@ import {
 	Mesh,
 	PlaneGeometry,
 	BoxGeometry,
-	Clock,
 } from 'three';
 
+import { oui } from './oui/oui';
 import * as util from './util';
 import * as materials from './materials';
 
-export const meshPlane = (material) => new Mesh(new PlaneGeometry(20000, 20000, 200, 200), material);
+export const meshPlane = (material) => new Mesh(new PlaneGeometry(3, 3, 5, 5), material);
 
 export default (container) => {
 	const c = util.defaultCamera(container);
@@ -20,23 +20,31 @@ export default (container) => {
 	const demoMat = materials.demoMaterial();
 
 	// Compose my objects onto the scene
-	// const testPlane = meshPlane(demoMat.material);
-	// s.scene.add(testPlane);
+	const testPlane = meshPlane(util.wireframe(0x663399));
+	testPlane.rotation.x = Math.PI / 7;
+	s.scene.add(testPlane);
 
 	const box = new Mesh(new BoxGeometry(0.75, 0.75, 0.75), demoMat.material);
 	box.position.x = 0;
 	box.position.y = 0;
 	s.scene.add(box);
 
-	const clock = new Clock();
-	const render = () => {
-		const delta = clock.getDelta();
+	// Throw down some UI
+	const ui = oui.add();
+	
+
+	const render = (delta) => {
 		demoMat.uniforms.time.value += delta * 5;
 		box.rotation.y += delta;
 		box.rotation.x += delta;
+
+		testPlane.rotation.x -= delta;
+		testPlane.rotation.y -= delta;
 	};
 
 	return {
+		// ?
+		ui,
 		// objects
 		c, s,
 		// pass on the render pipeline

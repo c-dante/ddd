@@ -17,7 +17,9 @@ window.addEventListener('resize', example.resize, false);
 example.resize();
 
 // Kick off the animate loop
+import { Clock } from 'three';
+const clock = new Clock();
 (function animate() {
 	requestAnimationFrame(animate);
-	example.render();
+	example.render(clock.getDelta());
 })();
