@@ -30,9 +30,9 @@ export default (container) => {
 	s.scene.add(box);
 
 	// Throw down some UI
-	const ui = oui.add();
-	
+	const ui = oui(c.camera.position, { title: 'camera.position' });
 
+	// And our render pipeline
 	const render = (delta) => {
 		demoMat.uniforms.time.value += delta * 5;
 		box.rotation.y += delta;

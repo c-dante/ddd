@@ -1,0 +1,20 @@
+.oui-root {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 250px;
+
+	color: darkcyan;
+}
+
+// A group of elements -- generally a ul and li
+.oui-group {
+	background: #202020;
+}
+.oui-group--children {
+	margin: 0;
+	padding: 1rem;
+}
+.oui-group--title {
+	text-align: center;
+}
