@@ -4,16 +4,18 @@ import {
 	BoxGeometry,
 	Clock,
 } from 'three';
+
 import * as util from './util';
 import * as materials from './materials';
 
 export const meshPlane = (material) => new Mesh(new PlaneGeometry(20000, 20000, 200, 200), material);
 
 export default (container) => {
-	const c = util.defaultCamera(window);
+	const c = util.defaultCamera(container);
 	const s = util.defaultScene(container, c.camera);
 
-	c.camera.position.z = 4;	
+	// Ho hum
+	c.camera.position.z = 4;
 
 	const demoMat = materials.demoMaterial();
 

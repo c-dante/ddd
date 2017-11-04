@@ -4,11 +4,13 @@ import './app.scss';
 import runGrid from './grid';
 
 // Init stuff from the DOM + renderer
-const container = document.getElementById( 'container' );
+const container = document.getElementById('container');
 
 // Run our shader box example
 // const example = runShaderBox(container);
 const example = runGrid(container);
+
+console.debug('Current example: ', example);
 
 // Kick off window resize + run it once
 window.addEventListener('resize', example.resize, false);

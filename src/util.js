@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 
 // Sets up an orbit controlled camera
-export const defaultCamera = (window) => {
-	const camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 3000 );
+export const defaultCamera = (container) => {
+	const camera = new THREE.PerspectiveCamera( 40, container.clientWidth / container.clientHeight, 1, 3000 );
 	
 	const resize = () => {
-		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.aspect = container.clientWidth / container.clientHeight;
 		camera.updateProjectionMatrix();
-	}
+	};
 
 	return { resize, camera };
 };
@@ -22,7 +22,7 @@ export const defaultScene = (container, camera) => {
 	const scene = new THREE.Scene();
 
 	const render = () => renderer.render(scene, camera);
-	const resize = () => renderer.setSize(window.innerWidth, window.innerHeight);
+	const resize = () => renderer.setSize(container.clientWidth, container.clientHeight);
 
 	return { renderer, scene, resize, render };
 };
