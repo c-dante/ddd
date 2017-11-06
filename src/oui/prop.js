@@ -36,15 +36,20 @@ export class PropUi {
 		this.input.addEventListener('input', (evt) => this.commit(evt));
 
 		// Update initial state
-		this.update();
+		this.render();
 	}
 
 	commit(evt) {
 		const val = evt.target.value;
-		setProp(this.object, this.path, val);
+		if (!isNaN(val)) {
+			setProp(this.object, this.path, val);
+		}
 	}
 
-	update() {
-		this.input.value = fp.get(this.path, this.object);
+	render() {
+		const val = fp.get(this.path, this.object);
+		if (!isNaN(val)) {
+			this.input.value = val;
+		}
 	}
 }

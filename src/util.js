@@ -1,6 +1,15 @@
 import * as THREE from 'three';
 
-// Sets up an orbit controlled camera
+// Keyboard state -- key name -> true if down, false if up
+export const keyState = {};
+window.addEventListener('keydown', (evt) => {
+	keyState[evt.key.toLowerCase()] = true;
+}, { passive: true });
+window.addEventListener('keyup', (evt) => {
+	keyState[evt.key.toLowerCase()] = false;
+}, { passive: true });
+
+// Sets up a camera
 export const defaultCamera = (container) => {
 	const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 3000);
 
@@ -36,6 +45,17 @@ export const pipeline = (objects) => {
 	const resize = (...args) => resizeable.forEach((obj, i) => obj.resize(...args, objects, i));
 
 	return { render, resize };
-}
+};
 
-export const wireframe = color => new THREE.MeshBasicMaterial({ color, wireframe: true });
+/**
+ * Constants for the basis unit vectors of 3 space, named
+ * @type {Object.<String, Vector3>}
+ */
+export const unit = {
+	up: new THREE.Vector3(0, 1, 0),
+	down: new THREE.Vector3(0, -1, 0),
+	left: new THREE.Vector3(-1, 0, 0),
+	right: new THREE.Vector3(1, 0, 0),
+	forward: new THREE.Vector3(0, 0, -1),
+	back: new THREE.Vector3(0, 0, 1),
+};

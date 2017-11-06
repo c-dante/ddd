@@ -36,12 +36,14 @@ export const oui = (object, {
 	);
 	const grouping = new GroupUi(dom, controllers.map(x => x.elt), title);
 
+	const render = () => {
+		controllers.forEach(ctrl => ctrl.render());
+	};
+
 	return {
 		grouping,
 		controllers,
+		render,
 	};
 };
 
-export const update = () => {
-	
-};

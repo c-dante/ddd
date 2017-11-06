@@ -1,4 +1,5 @@
 import {
+	MeshBasicMaterial,
 	ShaderMaterial,
 	Vector2,
 } from 'three';
@@ -26,3 +27,9 @@ export const demoMaterial = () => {
 
 	return { uniforms, material, resize };
 };
+
+// A wireframe of some color
+export const wireframe = color => new MeshBasicMaterial({
+	color,
+	wireframe: true,
+});

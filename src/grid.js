@@ -7,11 +7,14 @@ import {
 import { oui } from './oui/oui';
 import * as util from './util';
 import * as materials from './materials';
+import { orbitControls } from './flyMove';
 
 export const meshPlane = (material) => new Mesh(new PlaneGeometry(3, 3, 5, 5), material);
 
 export default (container) => {
 	const c = util.defaultCamera(container);
+	c.render = orbitControls(c.camera);
+
 	const s = util.defaultScene(container, c.camera);
 
 	// Ho hum
@@ -20,7 +23,7 @@ export default (container) => {
 	const demoMat = materials.demoMaterial();
 
 	// Compose my objects onto the scene
-	const testPlane = meshPlane(util.wireframe(0x663399));
+	const testPlane = meshPlane(materials.wireframe(0x663399));
 	testPlane.rotation.x = Math.PI / 7;
 	s.scene.add(testPlane);
 
@@ -48,6 +51,6 @@ export default (container) => {
 		// objects
 		c, s,
 		// pass on the render pipeline
-		...util.pipeline([c, s, demoMat, { render }]),
+		...util.pipeline([c, s, demoMat, { render }, ui]),
 	};
 };
