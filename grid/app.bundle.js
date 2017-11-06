@@ -66,7 +66,7 @@ var clock = new _three.Clock();
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.update = exports.oui = exports.DEFAULT_DOM = undefined;
+exports.oui = exports.DEFAULT_DOM = undefined;
 
 var _util = __webpack_require__("xArE");
 
@@ -116,13 +116,18 @@ var oui = exports.oui = function oui(object) {
 		return x.elt;
 	}), title);
 
+	var render = function render() {
+		controllers.forEach(function (ctrl) {
+			return ctrl.render();
+		});
+	};
+
 	return {
 		grouping: grouping,
-		controllers: controllers
+		controllers: controllers,
+		render: render
 	};
 };
-
-var update = exports.update = function update() {};
 
 /***/ }),
 
@@ -194,19 +199,24 @@ var PropUi = exports.PropUi = function () {
 		});
 
 		// Update initial state
-		this.update();
+		this.render();
 	}
 
 	_createClass(PropUi, [{
 		key: 'commit',
 		value: function commit(evt) {
 			var val = evt.target.value;
-			(0, _util.setProp)(this.object, this.path, val);
+			if (!isNaN(val)) {
+				(0, _util.setProp)(this.object, this.path, val);
+			}
 		}
 	}, {
-		key: 'update',
-		value: function update() {
-			this.input.value = _fp2.default.get(this.path, this.object);
+		key: 'render',
+		value: function render() {
+			var val = _fp2.default.get(this.path, this.object);
+			if (!isNaN(val)) {
+				this.input.value = val;
+			}
 		}
 	}]);
 
@@ -240,6 +250,8 @@ var _materials = __webpack_require__("jVsw");
 
 var materials = _interopRequireWildcard(_materials);
 
+var _flyMove = __webpack_require__("mzyf");
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var meshPlane = exports.meshPlane = function meshPlane(material) {
@@ -248,6 +260,8 @@ var meshPlane = exports.meshPlane = function meshPlane(material) {
 
 exports.default = function (container) {
 	var c = util.defaultCamera(container);
+	c.render = (0, _flyMove.orbitControls)(c.camera);
+
 	var s = util.defaultScene(container, c.camera);
 
 	// Ho hum
@@ -256,7 +270,7 @@ exports.default = function (container) {
 	var demoMat = materials.demoMaterial();
 
 	// Compose my objects onto the scene
-	var testPlane = meshPlane(util.wireframe(0x663399));
+	var testPlane = meshPlane(materials.wireframe(0x663399));
 	testPlane.rotation.x = Math.PI / 7;
 	s.scene.add(testPlane);
 
@@ -283,7 +297,7 @@ exports.default = function (container) {
 		ui: ui,
 		// objects
 		c: c, s: s
-	}, util.pipeline([c, s, demoMat, { render: render }]));
+	}, util.pipeline([c, s, demoMat, { render: render }, ui]));
 };
 
 /***/ }),
@@ -419,7 +433,7 @@ if(false) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.wireframe = exports.pipeline = exports.defaultScene = exports.defaultCamera = undefined;
+exports.unit = exports.pipeline = exports.defaultScene = exports.defaultCamera = exports.keyState = undefined;
 
 var _three = __webpack_require__("dKqR");
 
@@ -427,7 +441,16 @@ var THREE = _interopRequireWildcard(_three);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-// Sets up an orbit controlled camera
+// Keyboard state -- key name -> true if down, false if up
+var keyState = exports.keyState = {};
+window.addEventListener('keydown', function (evt) {
+	keyState[evt.key.toLowerCase()] = true;
+}, { passive: true });
+window.addEventListener('keyup', function (evt) {
+	keyState[evt.key.toLowerCase()] = false;
+}, { passive: true });
+
+// Sets up a camera
 var defaultCamera = exports.defaultCamera = function defaultCamera(container) {
 	var camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 3000);
 
@@ -489,8 +512,17 @@ var pipeline = exports.pipeline = function pipeline(objects) {
 	return { render: render, resize: resize };
 };
 
-var wireframe = exports.wireframe = function wireframe(color) {
-	return new THREE.MeshBasicMaterial({ color: color, wireframe: true });
+/**
+ * Constants for the basis unit vectors of 3 space, named
+ * @type {Object.<String, Vector3>}
+ */
+var unit = exports.unit = {
+	up: new THREE.Vector3(0, 1, 0),
+	down: new THREE.Vector3(0, -1, 0),
+	left: new THREE.Vector3(-1, 0, 0),
+	right: new THREE.Vector3(1, 0, 0),
+	forward: new THREE.Vector3(0, 0, -1),
+	back: new THREE.Vector3(0, 0, 1)
 };
 
 /***/ }),
@@ -504,7 +536,7 @@ var wireframe = exports.wireframe = function wireframe(color) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.demoMaterial = undefined;
+exports.wireframe = exports.demoMaterial = undefined;
 
 var _three = __webpack_require__("dKqR");
 
@@ -542,12 +574,136 @@ var demoMaterial = exports.demoMaterial = function demoMaterial() {
 	return { uniforms: uniforms, material: material, resize: resize };
 };
 
+// A wireframe of some color
+var wireframe = exports.wireframe = function wireframe(color) {
+	return new _three.MeshBasicMaterial({
+		color: color,
+		wireframe: true
+	});
+};
+
 /***/ }),
 
 /***/ "kioU":
 /***/ (function(module, exports) {
 
 module.exports = "uniform float time;\nuniform vec2 resolution;\nvarying vec2 vUv;\nvoid main( void ) {\n\tvec2 position = -1.0 + 2.0 * vUv;\n\tfloat red = abs( sin( position.x * position.y + time / 5.0 ) );\n\tfloat green = abs( sin( position.x * position.y + time / 4.0 ) );\n\tfloat blue = abs( sin( position.x * position.y + time / 3.0 ) );\n\tgl_FragColor = vec4( red, green, blue, 1.0 );\n}\n\n"
+
+/***/ }),
+
+/***/ "mzyf":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.orbitControls = undefined;
+
+var _three = __webpack_require__("dKqR");
+
+var _util = __webpack_require__("jHzk");
+
+// Some controls -- takes target then object mapping control action to keys
+var cacheQuat = new _three.Quaternion();
+var orbitControls = exports.orbitControls = function orbitControls(target) {
+	var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+	    _ref$forward = _ref.forward,
+	    forward = _ref$forward === undefined ? 'w' : _ref$forward,
+	    _ref$backward = _ref.backward,
+	    backward = _ref$backward === undefined ? 's' : _ref$backward,
+	    _ref$up = _ref.up,
+	    up = _ref$up === undefined ? ' ' : _ref$up,
+	    _ref$down = _ref.down,
+	    down = _ref$down === undefined ? 'c' : _ref$down,
+	    _ref$left = _ref.left,
+	    left = _ref$left === undefined ? 'a' : _ref$left,
+	    _ref$right = _ref.right,
+	    right = _ref$right === undefined ? 'd' : _ref$right,
+	    _ref$rollCW = _ref.rollCW,
+	    rollCW = _ref$rollCW === undefined ? 'e' : _ref$rollCW,
+	    _ref$rollCCW = _ref.rollCCW,
+	    rollCCW = _ref$rollCCW === undefined ? 'q' : _ref$rollCCW,
+	    _ref$turnLeft = _ref.turnLeft,
+	    turnLeft = _ref$turnLeft === undefined ? 'arrowleft' : _ref$turnLeft,
+	    _ref$turnRight = _ref.turnRight,
+	    turnRight = _ref$turnRight === undefined ? 'arrowright' : _ref$turnRight,
+	    _ref$turnUp = _ref.turnUp,
+	    turnUp = _ref$turnUp === undefined ? 'arrowup' : _ref$turnUp,
+	    _ref$turnDown = _ref.turnDown,
+	    turnDown = _ref$turnDown === undefined ? 'arrowdown' : _ref$turnDown,
+	    _ref$turn = _ref.turn,
+	    turn = _ref$turn === undefined ? 0.025 : _ref$turn,
+	    _ref$run = _ref.run,
+	    run = _ref$run === undefined ? 0.05 : _ref$run;
+
+	return function () {
+		// returns an update function
+		var updateMatrix = false;
+
+		// Move
+		if (_util.keyState[up]) {
+			target.translateOnAxis(_util.unit.up, run);
+		}
+
+		if (_util.keyState[down]) {
+			target.translateOnAxis(_util.unit.down, run);
+		}
+
+		if (_util.keyState[forward]) {
+			target.translateOnAxis(_util.unit.forward, run);
+		}
+
+		if (_util.keyState[backward]) {
+			target.translateOnAxis(_util.unit.back, run);
+		}
+
+		if (_util.keyState[left]) {
+			target.translateOnAxis(_util.unit.left, run);
+		}
+
+		if (_util.keyState[right]) {
+			target.translateOnAxis(_util.unit.right, run);
+		}
+
+		// Turn
+		if (_util.keyState[turnLeft]) {
+			target.quaternion.multiply(cacheQuat.setFromAxisAngle(_util.unit.up, turn));
+			updateMatrix = true;
+		}
+
+		if (_util.keyState[turnRight]) {
+			target.quaternion.multiply(cacheQuat.setFromAxisAngle(_util.unit.down, turn));
+			updateMatrix = true;
+		}
+
+		if (_util.keyState[turnUp]) {
+			target.quaternion.multiply(cacheQuat.setFromAxisAngle(_util.unit.right, turn));
+			updateMatrix = true;
+		}
+
+		if (_util.keyState[turnDown]) {
+			target.quaternion.multiply(cacheQuat.setFromAxisAngle(_util.unit.left, turn));
+			updateMatrix = true;
+		}
+
+		// Roll
+		if (_util.keyState[rollCW]) {
+			target.quaternion.multiply(cacheQuat.setFromAxisAngle(_util.unit.forward, turn));
+			updateMatrix = true;
+		}
+		if (_util.keyState[rollCCW]) {
+			target.quaternion.multiply(cacheQuat.setFromAxisAngle(_util.unit.back, turn));
+			updateMatrix = true;
+		}
+
+		if (updateMatrix && target.updateProjectionMatrix) {
+			target.updateProjectionMatrix();
+		}
+	};
+};
 
 /***/ }),
 
