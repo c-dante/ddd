@@ -1,14 +1,16 @@
 import './app.scss';
 
 // import runShaderBox from './shader-box';
-import runGrid from './grid';
+// import runGrid from './grid';
+import jumpNShootMan from './jumpnshootman';
 
 // Init stuff from the DOM + renderer
 const container = document.getElementById('container');
 
 // Run our shader box example
 // const example = runShaderBox(container);
-const example = runGrid(container);
+// const example = runGrid(container);
+const example = jumpNShootMan(container);
 
 console.debug('Current example: ', example);
 
