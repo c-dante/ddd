@@ -8,6 +8,7 @@ import {
 } from 'three';
 import { camScene } from './baseScenes';
 import * as util from './util';
+import { oui } from './oui/oui';
 
 import * as mat from './materials';
 const demoMat = mat.demoMaterial({
@@ -38,7 +39,6 @@ export default (container) => {
 	ground.position.y = -10;
 	ground.position.z = -100;
 	base.scene.add(ground);
-
 	
 	// Make a player
 	const playerMat = new MeshLambertMaterial({
@@ -64,6 +64,10 @@ export default (container) => {
 	// );
 	// lights.forEach(l => base.scene.add(l));
 
+	const ui = oui(player.mesh.position, {
+		title: 'Player.position',
+	});
+
 	const render = (delta) => {
 		demoMat.uniforms.time.value += delta * 5;
 		camLight.position.set(
@@ -71,14 +75,19 @@ export default (container) => {
 			base.camera.position.y,
 			base.camera.position.z
 		);
+
+		// I might just want physics >_>
+		if (player.mesh.position.y > ground.position.y) {
+			player.mesh.position.y -= 0.5;
+		}
 	};
 
 	return {
 		// Base props
 		...base,
 		// Add my stuff
-		ground, player,
+		ground, player, ui,
 		// Override render/resize from base by extending it
-		...util.pipeline([base, demoMat, { render }]),
+		...util.pipeline([ui, base, demoMat, { render }]),
 	};
 }

@@ -23,6 +23,10 @@ export const oui = (object, {
 	dom = DEFAULT_DOM, /** {Element} - dom to attach to */
 	title = '', /** {String} - Title for the object to add */
 } = {}) => {
+	if (!object) {
+		throw new Error('No object passed to oui');
+	}
+
 	// Filter props
 	const blacklist = util.argToSet(exclude);
 	const whitelist = util.argToSet(include);
