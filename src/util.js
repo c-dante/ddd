@@ -25,6 +25,7 @@ export const defaultCamera = (container) => {
 export const defaultScene = (container, camera) => {
 	const renderer = new THREE.WebGLRenderer();
 	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setClearColor(0x000000, 1);
 
 	container.appendChild(renderer.domElement);
 

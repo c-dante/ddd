@@ -3,6 +3,8 @@ import {
 	PlaneGeometry,
 	BoxGeometry,
 	MeshLambertMaterial,
+	AmbientLight,
+	PointLight,
 } from 'three';
 import { camScene } from './baseScenes';
 import * as util from './util';
@@ -23,6 +25,7 @@ export default (container) => {
 	// Build a base flycam scene
 	const base = camScene(container, {
 		run: 0.5,
+		turn: Math.PI / 80,
 	});
 
 	// Make some ground
@@ -50,8 +53,24 @@ export default (container) => {
 	player.mesh.translateOnAxis(util.unit.forward, 5);
 	base.scene.add(player.mesh);
 
+	const light = new AmbientLight(0x000000);
+	base.scene.add(light);
+	
+	const camLight = new PointLight(0xffffff, 1, 0);
+	base.scene.add(camLight);
+
+	// const lights = new Array(5).fill(0).map(
+	// 	() => new PointLight(0xffffff, 1, 0)
+	// );
+	// lights.forEach(l => base.scene.add(l));
+
 	const render = (delta) => {
 		demoMat.uniforms.time.value += delta * 5;
+		camLight.position.set(
+			base.camera.position.x,
+			base.camera.position.y,
+			base.camera.position.z
+		);
 	};
 
 	return {
