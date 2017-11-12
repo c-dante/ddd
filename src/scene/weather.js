@@ -15,7 +15,7 @@ const planet = (size, mat) => new Mesh(
 	mat
 );
 
-const spin = new Vector3(1.0, 0, 0);
+const spin = (new Vector3(0.8, 0.2, 0.1)).normalize();
 const rotSpeed = Math.PI / 180;
 
 export default (container) => {
