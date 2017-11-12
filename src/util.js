@@ -22,7 +22,7 @@ window.addEventListener('keyup', (evt) => {
 
 // Sets up a camera
 export const defaultCamera = (container) => {
-	const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 3000);
+	const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 10000);
 
 	const resize = () => {
 		camera.aspect = container.clientWidth / container.clientHeight;

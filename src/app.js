@@ -25,5 +25,5 @@ import { Clock } from 'three';
 const clock = new Clock();
 (function animate() {
 	requestAnimationFrame(animate);
-	example.render(clock.getDelta());
+	example.render(clock);
 })();

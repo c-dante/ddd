@@ -68,7 +68,8 @@ export default (container) => {
 		title: 'Player.position',
 	});
 
-	const render = (delta) => {
+	const render = (clock) => {
+		const delta = clock.getDelta();
 		demoMat.uniforms.time.value += delta * 5;
 		camLight.position.set(
 			base.camera.position.x,

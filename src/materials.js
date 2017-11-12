@@ -27,7 +27,11 @@ export const demoMaterial = (matProps = {}) => {
 		uniforms.resolution.value.y = window.innerHeight;
 	};
 
-	return { uniforms, material, resize };
+	const render = (clock) => {
+		uniforms.time.value = clock.elapsedTime;
+	};
+
+	return { uniforms, material, resize, render };
 };
 
 // A wireframe of some color

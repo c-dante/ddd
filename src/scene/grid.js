@@ -36,7 +36,8 @@ export default (container) => {
 	const ui = oui(c.camera.position, { title: 'camera.position' });
 
 	// And our render pipeline
-	const render = (delta) => {
+	const render = (clock) => {
+		const delta = clock.getDelta();
 		demoMat.uniforms.time.value += delta * 5;
 		box.rotation.y += delta;
 		box.rotation.x += delta;
