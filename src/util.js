@@ -1,5 +1,16 @@
 import * as THREE from 'three';
 
+// export const mouseState = {
+// 	pos: new THREE.Vector2(),
+// 	move: new THREE.Vector2(),
+// };
+// window.addEventListener('mousemove', (evt) => {
+// 	mouseState.pos.x = evt.screenX;
+// 	mouseState.pos.y = evt.screenY;
+// 	mouseState.move.x = evt.movementX;
+// 	mouseState.move.y = evt.movementY;
+// });
+
 // Keyboard state -- key name -> true if down, false if up
 export const keyState = {};
 window.addEventListener('keydown', (evt) => {

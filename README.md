@@ -25,6 +25,6 @@ npm install
 npm test // run tests
 npm run linter // lint and auto fix formatting errors
 
-npm run server // run webpack-dev-server with hot module reloading
+npm start // run webpack-dev-server with hot module reloading
 open localhost:8080
 ```

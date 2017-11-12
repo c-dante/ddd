@@ -1,4 +1,5 @@
-import './app.scss';
+import './app.css';
+import './oui/oui.css';
 
 // import runShaderBox from './scene/shader-box';
 // import runGrid from './scene/grid';

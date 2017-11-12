@@ -20,7 +20,7 @@ const plugins = [
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'vendor',
 		minChunks: function(module){
-			if (module.resource && (/^.*\.(css|scss)$/).test(module.resource)) {
+			if (module.resource && (/^.*\.(css)$/).test(module.resource)) {
 				return false;
 			}
 			return module.context && module.context.indexOf('node_modules') !== -1;
@@ -82,12 +82,11 @@ module.exports = {
 				loaders: [ 'raw-loader' ],
 			},
 			{
-				test: path.resolve(process.cwd(), 'src/app.scss'),
+				test: /(src|test).*\.css$/,
 				loaders: [
 					'style-loader',
 					'css-loader',
 					'postcss-loader',
-					'sass-loader',
 				]
 			},
 			{

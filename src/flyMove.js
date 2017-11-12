@@ -3,6 +3,22 @@ import { unit, keyState } from './util';
 
 // Some controls -- takes target then object mapping control action to keys
 const cacheQuat = new Quaternion();
+
+// export const mouseLook = (target, {
+// 	turn = 0.025,
+// } = {}) => () => {
+// 	if (keyState[turnRight]) {
+// 		target.quaternion.multiply(
+// 			cacheQuat.setFromAxisAngle(unit.down, turn)
+// 		);
+// 		updateMatrix = true;
+// 	}
+
+// 	if (updateMatrix && target.updateProjectionMatrix) {
+// 		target.updateProjectionMatrix();
+// 	}
+// };
+
 export const orbitControls = (target, {
 	forward = 'w',
 	backward = 's',
