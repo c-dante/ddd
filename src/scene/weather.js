@@ -1,8 +1,7 @@
 import {
 	Mesh,
 	SphereGeometry,
-	AmbientLight,
-	PointLight,
+	Vector3,
 } from 'three';
 import fp from 'lodash/fp';
 
@@ -11,48 +10,42 @@ import * as util from '../util';
 import * as materials from '../materials';
 import { orbitControls } from '../flyMove';
 
+const planet = (size, mat) => new Mesh(
+	new SphereGeometry(size),
+	mat
+);
+
+const spin = new Vector3(1.0, 0, 0);
+const rotSpeed = Math.PI / 180;
 
 export default (container) => {
 	const c = util.defaultCamera(container);
 	const s = util.defaultScene(container, c.camera);
 
-	const size = 5;
-	const zion = new Mesh(
-		new SphereGeometry(size, size, size),
-		materials.lambert()
-	);
+	const zion = planet(10, materials.wireframe());
+	const sol = planet(100, materials.wireframe(0xFF0000));
+	sol.position.set(0, 0, -2000);
 
-	// Pick a random point on zion
-	// Move the camera a little further "away"
-	const camHeight = 1;
-	const pt = fp.sample(zion.geometry.vertices).clone();
-	pt.setLength(pt.length() + camHeight);
-	pt.add(zion.position);
-
-	c.camera.position.x = pt.x;
-	c.camera.position.x = pt.y;
-	c.camera.position.y = pt.z;
-	c.camera.lookAt(zion.position);
-
-	c.render = orbitControls(c.camera);
-
-
+	// Fly controls on camera
+	c.render = orbitControls(c.camera, {
+		run: 0.5,
+		turn: 0.03,
+	});
 
 	// c.camera.lookAt;
 	// c.camera.translateOnAxis();
 	s.scene.add(zion);
+	s.scene.add(sol);
 
-	const light = new AmbientLight(0x000000);
-	s.scene.add(light);
-	
-	const camLight = new PointLight(0xffffff, 1, 0);
-	s.scene.add(camLight);
+	const p = new Mesh(new SphereGeometry(0.1), materials.wireframe(0x00FF00));
+	zion.add(p);
+	// Pick a point on zion
+	const pt = fp.sample(zion.geometry.vertices).clone();
+	p.position.set(pt.x, pt.y, pt.z);
 
 	// And our render pipeline
 	const render = (delta) => {
-		// @todo: delta
-		// console.debug(util.mouseState);
-		// c.camera
+		zion.rotateOnAxis(spin, rotSpeed);
 	};
 
 	return {
