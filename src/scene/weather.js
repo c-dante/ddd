@@ -25,38 +25,54 @@ const ellipsePath = (vec, t, a = 1, b = 1) => vec.set(
 	b * Math.sin(t)
 );
 
-// WOMP.
-const makeOrbitPlanet = (
-	size = 5,
-	material = materials.wireframe(),
-	a = 1000,
-	b = 1000,
-) => ({ mesh: planet(size, material), a, b });
+const orbit = (
+	width = 100,
+	height = 100,
+	speed = 1,
+	start = 0,
+) => ({
+	width, height, speed, start,
+});
+
+// Simple object of orbit + mesh
+const orbitMesh = (orbit, mesh) => ({ orbit, mesh });
 
 export default (container) => {
 	const c = util.defaultCamera(container);
 	const s = util.defaultScene(container, c.camera);
 
 	// Center
-	const sol = makeOrbitPlanet(100, materials.wireframe(0xFF0000));
+	const sol = planet(100, materials.wireframe(0xFF0000));
 
 	// Satellites
-	const zion = makeOrbitPlanet(10, materials.wireframe());
-	const oz = makeOrbitPlanet(6, materials.wireframe(0x33FF33), 1010, 800);
-	const graftis = makeOrbitPlanet(10, materials.wireframe(0x0000FF), 2000, 2000);
-	const nova = makeOrbitPlanet(25, materials.wireframe(0xFF6600), 1500, 800);
+	const zion = orbitMesh(
+		orbit(1000, 800, 1, Math.PI / 6),
+		planet(10, materials.wireframe()),
+	);
+	const oz = orbitMesh(
+		orbit(1500, 300, 0.25),
+		planet(30, materials.wireframe(0x33FF33)),
+	);
+	const graftis = orbitMesh(
+		orbit(1500, 300, 3, Math.PI / 60),
+		planet(5, materials.wireframe(0x0000FF)),
+	);
+	const nova = orbitMesh(
+		orbit(1500, 1800, 3, Math.PI / 60),
+		planet(20, materials.wireframe(0xFF6600)),
+	);
 	
 	// Save our planets
 	const planets = [zion, oz, graftis, nova];
 	
 	// Add them
-	s.scene.add(sol.mesh);
+	s.scene.add(sol);
 	planets.forEach(planet => s.scene.add(planet.mesh));
 
 
 	// Look at stuff
 	c.camera.position.set(0, 3500, 0);
-	c.camera.lookAt(sol.mesh.position);
+	c.camera.lookAt(sol.position);
 	c.render = orbitControls(c.camera, {
 		run: 0.5,
 		turn: 0.03,
@@ -80,9 +96,9 @@ export default (container) => {
 		planets.forEach(planet => {
 			ellipsePath(
 				planet.mesh.position,
-				clock.getElapsedTime(),
-				planet.a,
-				planet.b
+				planet.orbit.start + planet.orbit.speed * clock.getElapsedTime(),
+				planet.orbit.width,
+				planet.orbit.height
 			);
 		})
 	};
