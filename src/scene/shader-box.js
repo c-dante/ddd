@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import fragmentShader from './shaders/frag1.frag';
-import vertexShader from './shaders/vert1.vert';
+import fragmentShader from '../shaders/frag1.frag';
+import vertexShader from '../shaders/vert1.vert';
 
 // Lets you pass in the uniforms object to make a new material 
 export const getMaterial = uniforms => new THREE.ShaderMaterial({

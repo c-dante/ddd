@@ -1,9 +1,15 @@
-import * as util from './util';
-import { orbitControls } from './flyMove';
+import * as util from '../util';
+import { orbitControls } from '../flyMove';
 
-export default (container) => {
+export const camScene = (
+	container,
+	flyParams = {}
+) => {
 	const c = util.defaultCamera(container);
-	c.render = orbitControls(c.camera);
+	if (flyParams) {
+		c.render = orbitControls(c.camera, flyParams);
+	}
+
 	const s = util.defaultScene(container, c.camera);
 
 	return {

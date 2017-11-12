@@ -4,10 +4,10 @@ import {
 	BoxGeometry,
 } from 'three';
 
-import { oui } from './oui/oui';
-import * as util from './util';
-import * as materials from './materials';
-import { orbitControls } from './flyMove';
+import { oui } from '../oui/oui';
+import * as util from '../util';
+import * as materials from '../materials';
+import { orbitControls } from '../flyMove';
 
 export const meshPlane = (material) => new Mesh(new PlaneGeometry(3, 3, 5, 5), material);
 

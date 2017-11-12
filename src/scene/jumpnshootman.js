@@ -7,10 +7,10 @@ import {
 	PointLight,
 } from 'three';
 import { camScene } from './baseScenes';
-import * as util from './util';
-import { oui } from './oui/oui';
+import * as util from '../util';
+import { oui } from '../oui/oui';
 
-import * as mat from './materials';
+import * as mat from '../materials';
 const demoMat = mat.demoMaterial({
 	wireframe: true,
 });
