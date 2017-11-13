@@ -131,7 +131,7 @@ export default (container) => {
 	planets.forEach(planet => s.scene.add(planet.mesh));
 
 
-	// Look at stuff
+	// Turn logic
 	c.render = orbitControls(c.camera, {
 		run: 50,
 		turn: 0.03,
@@ -159,19 +159,27 @@ export default (container) => {
 			planet.mesh.rotateOnAxis(spin, rotSpeed / 100);
 		});
 		
-		if (util.keyState['i']) {
-			p.translateOnAxis(util.unit.forward, 1);
-		}
-		if (util.keyState['k']) {
-			p.translateOnAxis(util.unit.back, 1);
-		}
+		// if (util.keyState['i']) {
+		// 	p.translateOnAxis(util.unit.forward, 1);
+		// }
+		// if (util.keyState['k']) {
+		// 	p.translateOnAxis(util.unit.back, 1);
+		// }
 
 		// cam
 		scratch.position.copy(p.getWorldPosition());
-			// scratch.lookAt(oz.mesh.getWorldPosition());
-			scratch.translateOnAxis(util.unit.forward, 50);
+		// scratch.lookAt(oz.mesh.getWorldPosition());
+		// scratch.translateOnAxis(util.unit.forward, 50);
 		c.camera.position.copy(scratch.position);
-		c.camera.lookAt(sol.position);
+		
+		// space => look at sol
+		if (util.keyState[' ']) {
+			c.camera.lookAt(sol.position);
+		}
+		// o => look at oz
+		if (util.keyState['o']) {
+			c.camera.lookAt(oz.mesh.position);
+		}
 	};
 
 	return {
@@ -192,4 +200,5 @@ export default (container) => {
 // c.camera.translateOnAxis(util.unit.up, 20);
 
 // @todo: move out movement styles
-// @todo: 
+// @todo: clean up typedef on planets
+// @todo: clean u[ key interactions]
