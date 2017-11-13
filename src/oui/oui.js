@@ -12,7 +12,7 @@ import { GroupUi } from './group';
 import { PropUi } from './prop';
 
 // The default dom to attach
-export let DEFAULT_DOM = util.element({
+export const DEFAULT_DOM = util.element({
 	dom: document.body,
 	classes: [util.OUI_ROOT_CLASS],
 });
