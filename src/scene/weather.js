@@ -145,8 +145,9 @@ export default (container) => {
 	oz.mesh.add(p);
 
 	// Standing at a random point
-	const pt = fp.sample(oz.mesh.geometry.vertices).clone();
-	p.position.set(pt.x, pt.y, pt.z);	
+	// const pt = fp.sample(oz.mesh.geometry.vertices).clone();
+	// p.position.set(pt.x, pt.y, pt.z);	
+	p.position.set(0, 0, 40);	
 	
 	// And our render pipeline
 	const render = (clock) => {
@@ -156,7 +157,7 @@ export default (container) => {
 		// Run planet orbits
 		planets.forEach(planet => {
 			planetPos(planet, clock);
-			planet.mesh.rotateOnAxis(spin, rotSpeed / 100);
+			// planet.mesh.rotateOnAxis(spin, rotSpeed / 100);
 		});
 		
 		// if (util.keyState['i']) {
@@ -167,11 +168,15 @@ export default (container) => {
 		// }
 
 		// cam
-		scratch.position.copy(p.getWorldPosition());
+		// console.debug(p.getWorldPosition());
+		// scratch.position.copy(p.getWorldPosition());
 		// scratch.lookAt(oz.mesh.getWorldPosition());
 		// scratch.translateOnAxis(util.unit.forward, 50);
-		c.camera.position.copy(scratch.position);
-		
+		// c.camera.position.copy(p.getWorldPosition());
+
+		// cam by oz mesh
+		// c.camera.rotateOnAxis(spin, rotSpeed / 100);
+
 		// space => look at sol
 		if (util.keyState[' ']) {
 			c.camera.lookAt(sol.position);
