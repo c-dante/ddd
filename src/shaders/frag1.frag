@@ -8,4 +8,3 @@ void main( void ) {
 	float blue = abs( sin( position.x * position.y + time / 3.0 ) );
 	gl_FragColor = vec4( red, green, blue, 1.0 );
 }
-

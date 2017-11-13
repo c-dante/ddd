@@ -83,7 +83,9 @@ export default (container) => {
 	s.scene.add(scratch);
 
 	// Center
-	const sol = planet(100, new MeshBasicMaterial(0xFFFFFF));
+	const solMat = materials.rainbowBox();
+	const sol = planet(100, solMat.material);
+	// const sol = planet(100, new MeshBasicMaterial(0xFFFFFF));
 	const solLight = new PointLight(0xFFFFFF, 1);
 	s.scene.add(solLight);
 	
@@ -176,7 +178,7 @@ export default (container) => {
 		// meshs
 		c, s, p,
 		// pass on the render pipeline
-		...util.pipeline([c, s, { render }]),
+		...util.pipeline([c, s, solMat, { render }]),
 	};
 };
 

@@ -43,3 +43,27 @@ export const wireframe = (color = 0x663399) => new MeshBasicMaterial({
 export const lambert = (color = 0x663399) => new MeshLambertMaterial({
 	color,
 });
+
+import rainbowBoxFrag from './shaders/rainbow_box.frag';
+import passHsvFrag from './shaders/pass_hsv.frag';
+export const rainbowBox = () => {
+	const uniforms = {
+		u_resolution: { value: new Vector2() },
+		u_mouse: { value: new Vector2() },
+		u_time: { value: 0 },
+	};
+
+	const material = new ShaderMaterial({
+		uniforms,
+		vertexShader: demoVert,
+		// fragmentShader: passHsvFrag,
+		fragmentShader: rainbowBoxFrag,
+	});
+
+	const render = (clock) => {
+		uniforms.u_resolution.value.set(1, 1);
+		uniforms.u_time.value = clock.getElapsedTime();
+	};
+
+	return { material, uniforms, render };
+};
