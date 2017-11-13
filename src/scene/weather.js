@@ -46,7 +46,7 @@ const planetPos = (planet, clock) => {
 		planet.mesh.position.copy(
 			util.unit.up.clone()
 				.applyQuaternion(planet.orbit.quat)
-				.setLength(10)
+				.setLength(1000)
 		);
 		// console.debug(planet.id, planet.mesh.position);
 	} else {
@@ -126,11 +126,16 @@ export default (container) => {
 
 	// And our render pipeline
 	const render = (clock) => {
-		// Rotate zion @todo: other planets
-		zion.mesh.rotateOnAxis(spin, rotSpeed);
-
 		// Run planet orbits
-		planets.forEach(planet => planetPos(planet, clock));
+		planets.forEach(planet => {
+			planetPos(planet, clock);
+			planet.mesh.rotateOnAxis(spin, rotSpeed);
+		});
+		
+		c.camera.position.copy(
+			oz.mesh.position
+		);
+		c.camera.lookAt(sol.position);
 	};
 
 	return {
