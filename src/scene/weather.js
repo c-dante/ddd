@@ -8,6 +8,7 @@ import {
 	MeshLambertMaterial,
 	AmbientLight,
 	Object3D,
+	MeshBasicMaterial,
 } from 'three';
 import fp from 'lodash/fp';
 
@@ -82,12 +83,12 @@ export default (container) => {
 	s.scene.add(scratch);
 
 	// Center
-	const sol = planet(100, materials.wireframe(0xFF0000));
+	const sol = planet(100, new MeshBasicMaterial(0xFFFFFF));
 	const solLight = new PointLight(0xFFFFFF, 1);
 	s.scene.add(solLight);
 	
-	const light = new AmbientLight(0x340687);
-	s.scene.add(light);
+	const spaceLight = new AmbientLight(0x340687);
+	s.scene.add(spaceLight);
 
 	// Satellites
 	const zion = orbitMesh(
@@ -136,7 +137,7 @@ export default (container) => {
 
 	
 	// Make a person on zion
-	const p = new Mesh(new SphereGeometry(5), new MeshLambertMaterial({
+	const p = new Mesh(new SphereGeometry(2), new MeshLambertMaterial({
 		color: 0xFF00FF,
 	}));
 	oz.mesh.add(p);
@@ -168,7 +169,7 @@ export default (container) => {
 			// scratch.lookAt(oz.mesh.getWorldPosition());
 			scratch.translateOnAxis(util.unit.forward, 50);
 		c.camera.position.copy(scratch.position);
-		c.camera.lookAt(oz.mesh.position);
+		c.camera.lookAt(sol.position);
 	};
 
 	return {
