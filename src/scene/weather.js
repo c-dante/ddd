@@ -5,6 +5,8 @@ import {
 	Quaternion,
 	AxesHelper,
 	PointLight,
+	MeshLambertMaterial,
+	AmbientLight,
 } from 'three';
 import fp from 'lodash/fp';
 
@@ -13,8 +15,8 @@ import * as util from '../util';
 import * as materials from '../materials';
 import { orbitControls } from '../flyMove';
 
-const planet = (size, mat) => new Mesh(
-	new SphereGeometry(size),
+const planet = (size, mat, quality = 8) => new Mesh(
+	new SphereGeometry(size, quality, quality),
 	mat,
 );
 
@@ -78,11 +80,14 @@ export default (container) => {
 	const sol = planet(100, materials.wireframe(0xFF0000));
 	const solLight = new PointLight(0xFFFFFF, 1);
 	s.scene.add(solLight);
+	
+	const light = new AmbientLight(0x340687);
+	s.scene.add(light);
 
 	// Satellites
 	const zion = orbitMesh(
 		qorbit(1000),
-		planet(10, materials.wireframe()),
+		planet(10, new MeshLambertMaterial()),
 	);
 	zion.orbit.quat.setFromAxisAngle(
 		new Vector3(0, 1, 0),
@@ -90,15 +95,22 @@ export default (container) => {
 	);
 	const oz = orbitMesh(
 		orbit(2100, 1400, 300, 0.25),
-		planet(30, materials.wireframe(0x33FF33)),
+		planet(30, new MeshLambertMaterial({
+			// wireframe: true,
+			color: (0x00FF00)
+		}), 20),
 	);
 	const graftis = orbitMesh(
 		orbit(1500, 300, 200, 3, Math.PI / 60),
-		planet(5, materials.wireframe(0x0000FF)),
+		planet(5, new MeshLambertMaterial({
+			color: 0x0000FF,
+		})),
 	);
 	const nova = orbitMesh(
 		orbit(1500, 1800, 0, 3, Math.PI / 60),
-		planet(20, materials.wireframe(0xFF6600)),
+		planet(20, new MeshLambertMaterial({
+			color: 0xFF6600,
+		})),
 	);
 	
 	// Save our planets
@@ -122,12 +134,12 @@ export default (container) => {
 	
 	// Make a person on zion
 	const p = new Mesh(new SphereGeometry(0.1), materials.wireframe(0x00FF00));
-	zion.mesh.add(p);
+	oz.mesh.add(p);
 
 	// Standing at a random point
-	const pt = fp.sample(zion.mesh.geometry.vertices).clone();
-	p.position.set(pt.x, pt.y, pt.z);
-
+	const pt = fp.sample(oz.mesh.geometry.vertices).clone();
+	p.position.set(pt.x, pt.y, pt.z);	
+	
 	// And our render pipeline
 	const render = (clock) => {
 		// sunlight
@@ -140,16 +152,23 @@ export default (container) => {
 		});
 		
 		c.camera.position.copy(
-			oz.mesh.position
+			p.getWorldPosition()
 		);
-		c.camera.lookAt(sol.position);
-		c.camera.translateOnAxis(util.unit.back, 125)
 	};
 
 	return {
 		// meshs
-		c, s,
+		c, s, p,
 		// pass on the render pipeline
 		...util.pipeline([c, s, { render }]),
 	};
 };
+
+// Sketch box
+// 
+// Over the sholder camera progress:
+// c.camera.translateOnAxis(util.unit.back, 30); // oz-size = 30
+// c.camera.lookAt(sol.position);
+// c.camera.translateOnAxis(util.unit.back, 125);
+// c.camera.translateOnAxis(util.unit.right, 20);
+// c.camera.translateOnAxis(util.unit.up, 20);
