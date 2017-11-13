@@ -4,6 +4,7 @@ import {
 	Vector3,
 	Quaternion,
 	AxesHelper,
+	PointLight,
 } from 'three';
 import fp from 'lodash/fp';
 
@@ -17,7 +18,8 @@ const planet = (size, mat) => new Mesh(
 	mat,
 );
 
-const spin = (new Vector3(0.8, 0.2, 0.1)).normalize();
+// This changes the planet spin and speed
+const spin = (new Vector3(-0.5, 1.0, 0.0)).normalize();
 const rotSpeed = Math.PI / 180;
 
 // x-z ellipse path based on parametric t between 0 => 2pi
@@ -74,6 +76,8 @@ export default (container) => {
 
 	// Center
 	const sol = planet(100, materials.wireframe(0xFF0000));
+	const solLight = new PointLight(0xFFFFFF, 1);
+	s.scene.add(solLight);
 
 	// Satellites
 	const zion = orbitMesh(
@@ -85,7 +89,7 @@ export default (container) => {
 		Math.PI / 2 
 	);
 	const oz = orbitMesh(
-		orbit(1500, 300, 100, 0.25),
+		orbit(2100, 1400, 300, 0.25),
 		planet(30, materials.wireframe(0x33FF33)),
 	);
 	const graftis = orbitMesh(
@@ -126,6 +130,9 @@ export default (container) => {
 
 	// And our render pipeline
 	const render = (clock) => {
+		// sunlight
+		solLight.position.copy(sol.position);
+		
 		// Run planet orbits
 		planets.forEach(planet => {
 			planetPos(planet, clock);
@@ -136,6 +143,7 @@ export default (container) => {
 			oz.mesh.position
 		);
 		c.camera.lookAt(sol.position);
+		c.camera.translateOnAxis(util.unit.back, 125)
 	};
 
 	return {
