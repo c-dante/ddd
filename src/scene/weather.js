@@ -7,6 +7,7 @@ import {
 	PointLight,
 	MeshLambertMaterial,
 	AmbientLight,
+	Object3D,
 } from 'three';
 import fp from 'lodash/fp';
 
@@ -14,6 +15,8 @@ import { oui } from '../oui/oui';
 import * as util from '../util';
 import * as materials from '../materials';
 import { orbitControls } from '../flyMove';
+
+const scratch = new Object3D();
 
 const planet = (size, mat, quality = 8) => new Mesh(
 	new SphereGeometry(size, quality, quality),
@@ -75,6 +78,8 @@ const orbitMesh = (orbit, mesh) => ({
 export default (container) => {
 	const c = util.defaultCamera(container);
 	const s = util.defaultScene(container, c.camera);
+	
+	s.scene.add(scratch);
 
 	// Center
 	const sol = planet(100, materials.wireframe(0xFF0000));
@@ -124,8 +129,6 @@ export default (container) => {
 
 
 	// Look at stuff
-	c.camera.position.set(0, 0, 3500);
-	c.camera.lookAt(sol.position);
 	c.render = orbitControls(c.camera, {
 		run: 50,
 		turn: 0.03,
@@ -133,7 +136,9 @@ export default (container) => {
 
 	
 	// Make a person on zion
-	const p = new Mesh(new SphereGeometry(0.1), materials.wireframe(0x00FF00));
+	const p = new Mesh(new SphereGeometry(5), new MeshLambertMaterial({
+		color: 0xFF00FF,
+	}));
 	oz.mesh.add(p);
 
 	// Standing at a random point
@@ -148,12 +153,22 @@ export default (container) => {
 		// Run planet orbits
 		planets.forEach(planet => {
 			planetPos(planet, clock);
-			planet.mesh.rotateOnAxis(spin, rotSpeed);
+			planet.mesh.rotateOnAxis(spin, rotSpeed / 100);
 		});
 		
-		c.camera.position.copy(
-			p.getWorldPosition()
-		);
+		if (util.keyState['i']) {
+			p.translateOnAxis(util.unit.forward, 1);
+		}
+		if (util.keyState['k']) {
+			p.translateOnAxis(util.unit.back, 1);
+		}
+
+		// cam
+		scratch.position.copy(p.getWorldPosition());
+			// scratch.lookAt(oz.mesh.getWorldPosition());
+			scratch.translateOnAxis(util.unit.forward, 50);
+		c.camera.position.copy(scratch.position);
+		c.camera.lookAt(oz.mesh.position);
 	};
 
 	return {
@@ -172,3 +187,6 @@ export default (container) => {
 // c.camera.translateOnAxis(util.unit.back, 125);
 // c.camera.translateOnAxis(util.unit.right, 20);
 // c.camera.translateOnAxis(util.unit.up, 20);
+
+// @todo: move out movement styles
+// @todo: 
