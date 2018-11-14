@@ -7,7 +7,7 @@ export const GROUP_CHILD_CLASS = 'oui-group--child';
 
 // Thin wrapper around a ul of li items
 export class GroupUi {
-	
+
 	constructor(dom, children = [], title = 'New Group') {
 		const pugParams = {
 			title,
@@ -27,12 +27,12 @@ export class GroupUi {
 				tag: 'li',
 				classes: [GROUP_CHILD_CLASS],
 			});
-			
+
 			groupChild.appendChild(child);
-			
+
 			return groupChild;
 		});
-		
+
 		// Append them to my container
 		this.childrenElt = this.elt.querySelector(`.${GROUP_CHILDREN_CLASS}`);
 		children.forEach(child => {
